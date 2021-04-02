@@ -7,17 +7,7 @@
 #include "Packet.h"
 
 namespace Udopia {
-    SOCKET Server::InitSocket(const char* port) {
-        WSADATA wsaData{};
-        printf("Initializing Server...\n");
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            printf("Failed. Error Code : %d", WSAGetLastError());
-            exit(EXIT_FAILURE);
-        }
-        printf("Initialized.\n");
-
-        SOCKET serverSocket{};
-
+    Server::Server(const char *port) {
         // Used to specify which type of socket we want to use.
         struct addrinfo hints{};
         hints.ai_flags = AI_PASSIVE; // Fill in my IP for me
@@ -28,7 +18,7 @@ namespace Udopia {
         struct addrinfo *serverInfo{};
         if(getaddrinfo(nullptr, port, &hints, &serverInfo) != 0) {
             fprintf(stderr, "server: getaddrinfo error code: %d\n", WSAGetLastError());
-            return serverSocket;
+            return;
         }
 
         // loop through all the results and bind to the first we can
@@ -47,7 +37,7 @@ namespace Udopia {
                 continue;
             }
 
-            void*addr;
+            void *addr;
             char *ipver;
             if (p->ai_family == AF_INET) { // IPv4
                 auto *ipv4 = (struct sockaddr_in *)p->ai_addr;
@@ -62,24 +52,23 @@ namespace Udopia {
             // convert the IP to a string and print it:
             char ipstr[INET6_ADDRSTRLEN];
             inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
-            printf("  %s: %s\n", ipver, ipstr);
+            printf("Bound socket with %s: %s\n", ipver, ipstr);
 
             break;
         }
 
         if (p == nullptr) {
             fprintf(stderr, "server: failed to bind socket\n");
-            return serverSocket;
+            return;
         }
         freeaddrinfo(serverInfo);
-        return serverSocket;
     }
 
     void Server::SendPacket() {
 
     }
 
-    ReadStream Server::Listen() {
+    ReadStream Server::Listen() const {
         uint8_t buffer[MAX_PACKET_SIZE]{};
         ReadStream readStream(buffer, MAX_PACKET_SIZE);
 
@@ -101,7 +90,6 @@ namespace Udopia {
     Server::~Server() {
         printf("Shutting down Server...\n");
         closesocket(serverSocket);
-        WSACleanup();
     }
 
 }

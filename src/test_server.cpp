@@ -1,10 +1,11 @@
 //
 // Created by Lug on 17/03/2021.
 //
-#include "Server.h"
 #include "Udopia.h"
 
 int main() {
+    Udopia::Startup();
+
     Udopia::Server server("8080");
 
     while(true) {
@@ -18,6 +19,8 @@ int main() {
         printf("server: w: %d\n", packet.w);
         fflush(stdout);
     }
+
+    Udopia::Cleanup();
 
     return 0;
 }

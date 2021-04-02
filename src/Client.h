@@ -14,13 +14,12 @@
 namespace Udopia {
     class Client {
     public:
-        Client(const char* host, const char* port) : remoteSocket(InitSocket(host, port)) {}
+        Client(const char* host, const char* port);
         void SendPacket(uint8_t* buffer);
         ~Client();
     private:
         struct addrinfo* remoteSocketAddrInfo;
-        const SOCKET remoteSocket{};
-        SOCKET InitSocket(const char* host, const char* port);
+        SOCKET remoteSocket{};
     };
 }
 

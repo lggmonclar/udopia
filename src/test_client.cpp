@@ -10,6 +10,8 @@
 #define BUF_SIZE 2048
 
 int main() {
+    Udopia::Startup();
+
     Udopia::Client client("localhost", "8080");
 
 
@@ -36,6 +38,8 @@ int main() {
 
         client.SendPacket(buffer);
     }
+
+    Udopia::Cleanup();
 
     return 0;
 }

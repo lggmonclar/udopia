@@ -6,17 +6,7 @@
 #include "Client.h"
 
 namespace Udopia {
-    SOCKET Client::InitSocket(const char *host, const char *port) {
-        WSADATA wsaData{};
-        printf("Initializing Client...\n");
-        if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-            printf("Failed. Error Code : %d", WSAGetLastError());
-            exit(EXIT_FAILURE);
-        }
-        printf("Initialized.\n");
-
-        SOCKET remoteSocket{};
-
+    Client::Client(const char *host, const char *port) {
         // Used to specify which type of socket we want to use.
         struct addrinfo hints{};
         hints.ai_family = AF_UNSPEC; // Either IPv4 or IPv6
@@ -26,7 +16,7 @@ namespace Udopia {
         struct addrinfo *availableAddresses{};
         if(getaddrinfo(host, port, &hints, &availableAddresses) != 0) {
             fprintf(stderr, "getaddrinfo: %d\n", WSAGetLastError());
-            return remoteSocket;
+            return;
         }
 
         // loop through all the results and make a socket
@@ -41,11 +31,10 @@ namespace Udopia {
 
         if (p == nullptr) {
             fprintf(stderr, "client: failed to create socket\n");
-            return remoteSocket;
+            return;
         }
-        remoteSocketAddrInfo = p;
 
-        return remoteSocket;
+        remoteSocketAddrInfo = p;
     }
 
     void Client::SendPacket(uint8_t *buffer) {
@@ -60,6 +49,5 @@ namespace Udopia {
     Client::~Client() {
         freeaddrinfo(remoteSocketAddrInfo);
         closesocket(remoteSocket);
-        WSACleanup();
     }
 }

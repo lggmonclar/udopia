@@ -3,6 +3,14 @@
 
 #include <string>
 #include "Serialization.h"
+#include "Client.h"
+#include "Server.h"
+
+
+namespace Udopia {
+    void Startup();
+    void Cleanup();
+}
 
 struct PacketA {
     int x, y, z, w;

@@ -7,19 +7,20 @@
 #include <WS2tcpip.h>
 #include <WinSock2.h>
 #include "ReadStream.h"
+#include "Udopia.h"
+
 
 #pragma comment(lib, "ws2_32.lib")
 
 namespace Udopia {
     class Server {
     public:
-        explicit Server(const char *port): serverSocket(InitSocket(port)) {}
-        ReadStream Listen();
+        explicit Server(const char *port);
+        ReadStream Listen() const;
         void SendPacket();
         ~Server();
     private:
-        const SOCKET serverSocket{};
-        static SOCKET InitSocket(const char *port);
+        SOCKET serverSocket{};
     };
 }
 #endif //UDOPIA_SERVER_H
